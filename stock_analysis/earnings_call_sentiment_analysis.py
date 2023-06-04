@@ -36,7 +36,7 @@ all_sentences = []
 for sentence in sentiment_call.sentences:
     # Print sentence sentiment polarity (for debugging purposes)
     # print(sentence.sentiment.polarity)
-    
+
     # Count number of negative, positive, and neutral sentences
     if sentence.sentiment.polarity < 0:
         negative +=1
@@ -44,18 +44,18 @@ for sentence in sentiment_call.sentences:
         positive += 1
     else:
         neutral += 1
-    
+
     # Append sentence polarity to all_sentences list
     all_sentences.append(sentence.sentiment.polarity) 
 
 # Print number of negative, positive, and neutral sentences
-print('positive: ' +  str(positive))
-print('negative: ' +  str(negative))
-print('neutral: ' + str(neutral))
+print(f'positive: {str(positive)}')
+print(f'negative: {str(negative)}')
+print(f'neutral: {str(neutral)}')
 
 # Print the mean sentence polarity
 all_sentences = np.array(all_sentences)
-print('sentence polarity: ' + str(all_sentences.mean()))
+print(f'sentence polarity: {str(all_sentences.mean())}')
 
 # Print sentences with very positive sentiment polarity
 for sentence in sentiment_call.sentences:

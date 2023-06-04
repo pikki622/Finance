@@ -18,6 +18,10 @@ now = dt.date(2020, 10, 3)
 # Ask for stock ticker and run until user enters 'quit'
 stock = input("Enter the stock symbol: ")
 
+# Calculate the Simple Moving Average and create a new column in the data frame
+sma = 50
+# Add more x axis labels
+limit = 10
 while stock.lower() != "quit":
 
     # Create Plots
@@ -27,12 +31,10 @@ while stock.lower() != "quit":
     df = pdr.get_data_yahoo(stock, start, now)
     print(df.tail(1))
 
-    # Calculate the Simple Moving Average and create a new column in the data frame
-    sma = 50
-    df['SMA'+str(sma)] = df.iloc[:,4].rolling(window=sma).mean()
-    
+    df[f'SMA{sma}'] = df.iloc[:,4].rolling(window=sma).mean()
+
     # Calculate percentage change and create a new column in the data frame
-    df['PC'] = ((df["Adj Close"]/df['SMA'+str(sma)])-1)*100
+    df['PC'] = (df["Adj Close"] / df[f'SMA{sma}'] - 1) * 100
 
     # Calculate mean, standard deviation, current, and yesterday's percentage change
     mean = round(df["PC"].mean(), 2)
@@ -41,10 +43,10 @@ while stock.lower() != "quit":
     yday = round(df["PC"][-2], 2)
 
     # Print calculated values
-    print("Mean: "+str(mean))
-    print("Standard Dev: "+str(stdev))
-    print("Current: " + str(current))
-    print("Yesterday: " + str(yday))
+    print(f"Mean: {str(mean)}")
+    print(f"Standard Dev: {str(stdev)}")
+    print(f"Current: {str(current)}")
+    print(f"Yesterday: {str(yday)}")
 
     # Set the bin size
     bins = np.arange(-100, 100, 1)
@@ -59,8 +61,8 @@ while stock.lower() != "quit":
     plt.hist(df["PC"], bins=bins, alpha=0.5)
 
     # Set the plot title, x-axis label, and y-axis label
-    plt.title(stock+"-- % From "+str(sma)+" SMA Histogram since "+str(start.year))
-    plt.xlabel('Percent from '+str(sma)+' SMA (bin size = 1)')
+    plt.title(f"{stock}-- % From {sma} SMA Histogram since {str(start.year)}")
+    plt.xlabel(f'Percent from {sma} SMA (bin size = 1)')
     plt.ylabel('Count')
 
     # Add vertical lines to the plot for mean and standard deviation
@@ -73,25 +75,23 @@ while stock.lower() != "quit":
     plt.axvline(x=-3*stdev+mean, ymin=0, ymax=1, color='gray', alpha=.5, linestyle='--')
     plt.axvline(x=current, ymin=0, ymax=1, color='r', label = 'today')
     plt.axvline(x=yday, ymin=0, ymax=1, color='blue', label = 'yesterday')
-    
+
     # Add more x axis labels
     ax1.xaxis.set_major_locator(mticker.MaxNLocator(14)) 
-    
+
     # Create Plots
     fig2, ax2 = plt.subplots() 
-    
+
     # Percent from SMA Chart
     df=df[-150:]
     df['PC'].plot(label='close',color='k')
-    plt.title(stock+"-- % From "+str(sma)+" SMA Over last 100 days")
-    plt.xlabel('Date') 
-    plt.ylabel('Percent from '+str(sma)+' SMA')
+    plt.title(f"{stock}-- % From {sma} SMA Over last 100 days")
+    plt.xlabel('Date')
+    plt.ylabel(f'Percent from {sma} SMA')
 
-    # Add more x axis labels
-    limit = 10
-    ax2.xaxis.set_major_locator(mticker.MaxNLocator(8)) 
+    ax2.xaxis.set_major_locator(mticker.MaxNLocator(8))
     plt.axhline(y=limit, xmin=0, xmax=1, color='r')
     rcParams['figure.figsize'] = 15, 10
     plt.show()
-    
+
     stock = input("Enter the stock symbol: ") 

@@ -62,8 +62,8 @@ def astral(data, completion, step, step_two, what, high, low, where_long, where_
 
 # Set the ticker and date range for the stock data to analyze
 ticker = 'APPS'
-start = dt.datetime.today() - dt.timedelta(days=int(365.25*2))
-end = dt.datetime.today()
+start = dt.datetime.now() - dt.timedelta(days=int(365.25*2))
+end = dt.datetime.now()
 data = pdr.get_data_yahoo(ticker, start, end)
 
 # Print the modified data with long and short signals added

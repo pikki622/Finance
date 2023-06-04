@@ -46,17 +46,17 @@ drop = {}
 increase = {}
 for day in range(10,len(data)-1):
     previous_close = data['Close'][day-10:day]
-    ratios = []
-    for i in range(1,len(previous_close)):
-        ratios.append(previous_close[i]/previous_close[i-1])
-    if data['Close'][day+1] > data['Close'][day]:
-        for i in range(len(ratios)):
+    ratios = [
+        previous_close[i] / previous_close[i - 1]
+        for i in range(1, len(previous_close))
+    ]
+    for i in range(len(ratios)):
+        if data['Close'][day+1] > data['Close'][day]:
             if i in increase:
                 increase[i] += (ratios[i],)
             else:
                 increase[i] = ()
-    elif data['Close'][day+1] < data['Close'][day]:
-        for i in range(len(ratios)):
+        elif data['Close'][day+1] < data['Close'][day]:
             if i in drop:
                 drop[i] += (ratios[i],)
             else:
@@ -64,9 +64,7 @@ for day in range(10,len(data)-1):
 
 # Calculate new daily ratios and store them in the corresponding dictionary
 new_close = data['Close'][-11:-1]
-ratios = []
-for i in range(1,len(new_close)):
-    ratios.append(new_close[i]/new_close[i-1])
+ratios = [new_close[i]/new_close[i-1] for i in range(1,len(new_close))]
 for i in range(len(ratios)):
     if i in increase:
         increase[i] += (ratios[i],)

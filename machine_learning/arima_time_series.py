@@ -44,7 +44,7 @@ def test_stationarity(timeseries):
     # Determing rolling statistics
     rolmean = timeseries.rolling(12).mean()
     rolstd = timeseries.rolling(12).std()
-    
+
     # Plot rolling statistics
     plt.plot(timeseries, color='blue', label='Original')
     plt.plot(rolmean, color='red', label='Rolling Mean')
@@ -52,13 +52,21 @@ def test_stationarity(timeseries):
     plt.legend(loc='best')
     plt.title('Rolling Mean and Standard Deviation')
     plt.show(block=False)
-    
+
     # Print the results of Dickey-Fuller Test
     print("Results of Dickey Fuller Test")
     adft = adfuller(timeseries, autolag='AIC')
     # Output for DFT will give us without defining what the values are.
     # Hence we manually write what values does it explains using a for loop
-    output = pd.Series(adft[0:4], index=['Test Statistics', 'p-value', 'No. of lags used', 'Number of observations used'])
+    output = pd.Series(
+        adft[:4],
+        index=[
+            'Test Statistics',
+            'p-value',
+            'No. of lags used',
+            'Number of observations used',
+        ],
+    )
     for key, value in adft[4].items():
         output[f'critical value ({key})'] = value
     print(output)
@@ -68,8 +76,8 @@ test_stationarity(df_close)
 # To separate the trend and the seasonality from a time series, 
 # we can decompose the series using the following code.
 result = seasonal_decompose(df_close, model='multiplicative', freq=30)
-fig = plt.figure()  
-fig = result.plot()  
+fig = plt.figure()
+fig = result.plot()
 fig.set_size_inches(16, 9)
 
 # If not stationary then eliminate trend
@@ -96,8 +104,8 @@ plt.plot(test_data, 'blue', label='Test data')
 plt.legend()
 
 # Build Model
-model = ARIMA(train_data, order=(3, 1, 2))  
-fitted = model.fit(disp=-1)  
+model = ARIMA(train_data, order=(3, 1, 2))
+fitted = model.fit(disp=-1)
 print(fitted.summary())
 
 # Forecast
@@ -123,13 +131,13 @@ plt.show()
 
 # Report performance
 mse = mean_squared_error(test_data, fc)
-print('MSE: '+str(mse))
+print(f'MSE: {str(mse)}')
 mae = mean_absolute_error(test_data, fc)
-print('MAE: '+str(mae))
+print(f'MAE: {str(mae)}')
 rmse = math.sqrt(mean_squared_error(test_data, fc))
-print('RMSE: '+str(rmse))
+print(f'RMSE: {str(rmse)}')
 mape = np.mean(np.abs(fc - test_data)/np.abs(test_data))
-print('MAPE: '+str(mape))
+print(f'MAPE: {str(mape)}')
 
 # Auto ARIMA
 model_autoARIMA = auto_arima(train_data, start_p=0, start_q=0,

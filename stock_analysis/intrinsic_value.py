@@ -85,17 +85,11 @@ def get_finviz_data(ticker):
         # Generate the url for the given ticker and add headers to request
         url = (f"http://finviz.com/quote.ashx?t={ticker}")
         headers_dictionary = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0'}
-        
+
         # Use Beautifulsoup to parse the webpage
         soup = bs(requests.get(url,headers=headers_dictionary).content, features="lxml")
-        
-        # Create an empty dictionary to store the metrics and their values
-        finviz_dict = {}
-        
-        # Loop through each metric in the list of metrics and find its value using the fundamental_metrics function
-        for m in metrics:   
-            finviz_dict[m] = fundamental_metrics(soup,m)
-        
+
+        finviz_dict = {m: fundamental_metrics(soup,m) for m in metrics}
         # Loop through the dictionary and clean up the metric values by removing any text and converting to the appropriate number format
         for key, value in finviz_dict.items():
             # remove percentage sign and convert to float
@@ -107,7 +101,7 @@ def get_finviz_data(ticker):
             # convert million to integer value
             if (value[-1]=='M'):
                 finviz_dict[key] = float(value[:-1])*1000000
-            
+
             # Convert the values to float if possible
             try:
                 finviz_dict[key] = float(finviz_dict[key])
@@ -116,7 +110,7 @@ def get_finviz_data(ticker):
 
     except Exception as e:
         print (f'The following error has occurred while retrieving finviz data \n{e}')        
-    
+
     # Return the dictionary containing the finviz metrics
     return finviz_dict
 
@@ -126,26 +120,26 @@ beta = finviz_data['Beta']
 
 # Calculating discount rate based off beta value
 discount = 7
-if(beta<0.80):
+if (beta<0.80):
     discount = 5
-elif(beta>=0.80 and beta<1):
+elif beta < 1:
     discount = 6
-elif(beta>=1 and beta<1.1):
+elif beta < 1.1:
     discount = 6.5
-elif(beta>=1.1 and beta<1.2):
+elif beta < 1.2:
     discount = 7
-elif(beta>=1.2 and beta<1.3):
+elif beta < 1.3:
     discount =7.5
-elif(beta>=1.3 and beta<1.4):
+elif beta < 1.4:
     discount = 8
-elif(beta>=1.4 and beta<1.6):
+elif beta < 1.6:
     discount = 8.5
 elif(beta>=1.61):
     discount = 9   
 
 # Creating variables from all sheets
 cash_flow = all_sheets.iloc[-1]['freeCashFlow']
-total_debt = all_sheets.iloc[-1]['totalDebt'] 
+total_debt = all_sheets.iloc[-1]['totalDebt']
 liquid_assets = all_sheets.iloc[-1]['cashAndShortTermInvestments']
 
 # Retrieving and calculating further metrics from finviz
@@ -164,10 +158,10 @@ def calc_intrinsic_value(cash_flow, total_debt, liquid_assets,
     eps_growth_6Y_to_10Y = eps_growth_6Y_to_10Y/100
     eps_growth_11Y_to_20Y = eps_growth_11Y_to_20Y/100
     discount_d = discount/100
-    
+
     # Projecting future cash flows
     cf_list = []
-    
+
     # Cash Flows Years 1 to 5
     for year in range(1, 6):
         cash_flow*=(1 + eps_growth_5Y)
@@ -185,10 +179,8 @@ def calc_intrinsic_value(cash_flow, total_debt, liquid_assets,
         cash_flow*=(1 + eps_growth_11Y_to_20Y)
         cash_flow_discount = cash_flow/((1 + discount_d)**year)
         cf_list.append(cash_flow_discount)
-    
-    intrinsic_value = (sum(cf_list) - total_debt + liquid_assets)/shs_outstanding
 
-    return intrinsic_value
+    return (sum(cf_list) - total_debt + liquid_assets)/shs_outstanding
 
 # Get intrinsic value
 intrinsic_value = calc_intrinsic_value(cash_flow, total_debt, liquid_assets, 

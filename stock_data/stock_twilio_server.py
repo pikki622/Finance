@@ -14,33 +14,33 @@ def sms():
         # Get request parameters
         number = request.form['From']
         message_body = request.form['Body']
-        
+
         # Initialize Twilio messaging response
         resp = MessagingResponse()
 
         # Get stock symbol from message body
         stock_symbol = message_body.upper()
-        
+
         # Get live price of the stock
         price = si.get_live_price(stock_symbol)
         price = round(price, 2)
-        
+
         # Calculate buy and short targets
         avg_gain = 15
         avg_loss = 5
-        
+
         max_stop_buy = round(price * ((100 - avg_loss) / 100), 2)
         target_1r_buy = round(price * ((100 + avg_gain) / 100), 2)
         target_2r_buy = round(price * ((100 + (2 * avg_gain)) / 100), 2)
         target_3r_buy = round(price * ((100 + (3 * avg_gain)) / 100), 2)
-        
+
         max_stop_short = round(price * ((100 + avg_loss) / 100), 2)
         target_1r_short = round(price * ((100 - avg_gain) / 100), 2)
         target_2r_short = round(price * ((100 - (2 * avg_gain)) / 100), 2)
         target_3r_short = round(price * ((100 - (3 * avg_gain)) / 100), 2)
 
-        change = str(round(((price - price) / price) * 100, 4)) + '%'
-        
+        change = f'{str(round((price - price) / price * 100, 4))}%'
+
         # Scrape stock data from finviz.com
         url = f"https://finviz.com/screener.ashx?v=152&ft=4&t={stock_symbol}&ar=180&c=1,2,3,4,5,6,7,14,17,18,23,26,27,28,29,42,43,44,45,46,47,48,49,51,52,53,54,57,58,59,60,62,63,64,67,68,69"
         req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -66,7 +66,7 @@ def sms():
 
         resp.message(message)
         return str(resp)
-    
+
     except Exception as e:
         resp.message(f'\n{e}')
         return str(resp)

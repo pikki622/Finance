@@ -17,9 +17,7 @@ def get_stock_backtest_data(ticker, start, end):
     start_date_buffer = datetime.strptime(start_date, date_fmt) - timedelta(days=365)
     start_date_buffer = start_date_buffer.strftime(date_fmt)
 
-    df = yf.download(ticker, start=start_date_buffer, end=end_date)
-
-    return df
+    return yf.download(ticker, start=start_date_buffer, end=end_date)
 
 df = get_stock_backtest_data(ticker, start_date, end_date)
 df["CLOSE_PREV"] = df.Close.shift(1)
@@ -307,10 +305,9 @@ def prepare_stock_ta_backtest_data(
     df, start_date, end_date, strategy, **strategy_params
 ):
     df_strategy = strategy(df, **strategy_params)
-    bt_df = df_strategy[
+    return df_strategy[
         (df_strategy.index >= start_date) & (df_strategy.index <= end_date)
     ]
-    return bt_df
 
 bt_df = prepare_stock_ta_backtest_data(
     df, start_date, end_date, strategy_KeltnerChannel_origin, n=10

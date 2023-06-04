@@ -73,12 +73,12 @@ else:
         S1 = data[i[0]]
         S2 = data[i[1]]
         score, pvalue, _ = coint(S1, S2)
-        print(f'p-value between {i[0]} and {i[1]}: ' + str(pvalue))
+        print(f'p-value between {i[0]} and {i[1]}: {str(pvalue)}')
         values.append(pvalue)
-    
+
     min_val = np.argmin(values)
     spread = data[pairs[min_val][0]] - data[pairs[min_val][1]]
-    
+
     # Plot Rolling 20-Day Spread
     spread_mavg1 = spread.rolling(1).mean()
     spread_mavg20 = spread.rolling(20).mean()

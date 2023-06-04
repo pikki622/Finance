@@ -13,8 +13,7 @@ yf.pdr_override()
 
 # Function to get historical stock price data
 def get_historical_prices(symbols, start_date, end_date):
-    df = yf.download(symbols, start=start_date, end=end_date)['Adj Close']
-    return df
+    return yf.download(symbols, start=start_date, end=end_date)['Adj Close']
 
 # Example list of symbols to fetch historical data for
 symbols = ['FB', 'JNJ', 'LMT']
@@ -36,16 +35,14 @@ daily_returns = daily_returns.dropna()
 
 # Function to calculate monthly returns from daily returns
 def calc_monthly_returns(daily_returns):
-    monthly = np.exp(daily_returns.groupby(lambda date: date.month).sum())-1
-    return monthly
+    return np.exp(daily_returns.groupby(lambda date: date.month).sum())-1
 
 # Calculate monthly returns from daily returns
 month_returns = calc_monthly_returns(daily_returns)
 
 # Function to calculate annual returns from daily returns
 def calc_annual_returns(daily_returns):
-    grouped = np.exp(daily_returns.groupby(lambda date: date.year).sum())-1
-    return grouped
+    return np.exp(daily_returns.groupby(lambda date: date.year).sum())-1
 
 # Calculate annual returns from daily returns
 annual_returns = calc_annual_returns(daily_returns)
@@ -55,8 +52,7 @@ def calc_portfolio_var(returns, weights=None):
     if weights is None:
         weights = np.ones(returns.columns.size) / returns.columns.size
     sigma = np.cov(returns.T, ddof=0)
-    var = (weights * sigma * weights.T).sum()
-    return var
+    return (weights * sigma * weights.T).sum()
 
 # Calculate portfolio variance from annual returns
 portfolio_var = calc_portfolio_var(annual_returns)
@@ -68,8 +64,7 @@ def calc_sharpe_ratio(returns, weights=None, risk_free_rate=0.001):
         weights = np.ones(n)/n
     var = calc_portfolio_var(returns, weights)
     means = returns.mean()
-    sharpe_ratio = (means.dot(weights) - risk_free_rate) / np.sqrt(var)
-    return sharpe_ratio
+    return (means.dot(weights) - risk_free_rate) / np.sqrt(var)
 
 # Calculate Sharpe ratio from daily returns
 sharpe_ratio = calc_sharpe_ratio(daily_returns)

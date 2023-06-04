@@ -6,11 +6,10 @@ import yfinance as yf
 import datetime as dt
 yf.pdr_override()
 
-# input
-symbol = "AAPL"
 start = dt.date.today() - dt.timedelta(days=365 * 2)
 end = dt.date.today()
 
+symbol = "AAPL"
 # Read data
 df = yf.download(symbol, start, end)
 
@@ -23,11 +22,7 @@ fig = plt.figure(figsize=(14, 7))
 ax1 = plt.subplot(2, 1, 1)
 ax1.plot(df["Adj Close"])
 ax1.set_title(
-    "Stock "
-    + symbol
-    + " Closing Price of "
-    + str(n)
-    + "-Day Exponential Moving Average of Volume"
+    f"Stock {symbol} Closing Price of {n}-Day Exponential Moving Average of Volume"
 )
 ax1.set_ylabel("Price")
 ax1.legend(loc="best")
@@ -62,7 +57,7 @@ colors = dfc.VolumePositive.map({True: "g", False: "r"})
 ax1v.bar(dfc.Date, dfc["Volume"], color=colors, alpha=0.4)
 ax1v.axes.yaxis.set_ticklabels([])
 ax1v.set_ylim(0, 3 * df.Volume.max())
-ax1.set_title("Stock " + symbol + " Closing Price")
+ax1.set_title(f"Stock {symbol} Closing Price")
 ax1.set_ylabel("Price")
 
 ax2 = plt.subplot(2, 1, 2)

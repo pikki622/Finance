@@ -4,11 +4,11 @@ import numpy as np
 import datetime
 from pandas_datareader import DataReader
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression 
+from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import GradientBoostingRegressor
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from pylab import rcParams
 
 # Define the stock and date range
@@ -20,7 +20,7 @@ end_date = datetime.date.today()
 df = DataReader(stock, "yahoo", start_date, end_date)
 
 # Add a column for predictions
-forecast_out = 30 
+forecast_out = 30
 df['Prediction'] = df[['Close']].shift(-forecast_out)
 
 # Prepare data for training and testing
@@ -73,10 +73,26 @@ rfg_confidence = round(clf_rf.score(x_test,y_test), 2)
 gbr_confidence = round(clf_gb.score(x_test,y_test), 2)
 
 # Plot the predictions
-plt.plot(svm_prediction, markerfacecolor='orange', label = "lr confidence: {}".format(lr_confidence))
-plt.plot(lr_prediction, markerfacecolor='blue', label = "svm confidence: {} ".format(svm_confidence))
-plt.plot(rfg_prediction, markerfacecolor='red', label = "rfg confidence: {}".format(rfg_confidence))
-plt.plot(gbr_prediction, markerfacecolor='green', label = "gbr confidence: {} ".format(gbr_confidence))
+plt.plot(
+    svm_prediction,
+    markerfacecolor='orange',
+    label=f"lr confidence: {lr_confidence}",
+)
+plt.plot(
+    lr_prediction,
+    markerfacecolor='blue',
+    label=f"svm confidence: {svm_confidence} ",
+)
+plt.plot(
+    rfg_prediction,
+    markerfacecolor='red',
+    label=f"rfg confidence: {rfg_confidence}",
+)
+plt.plot(
+    gbr_prediction,
+    markerfacecolor='green',
+    label=f"gbr confidence: {gbr_confidence} ",
+)
 plt.legend(loc=10)
 plt.title(stock)
 rcParams['figure.figsize'] = 15, 10

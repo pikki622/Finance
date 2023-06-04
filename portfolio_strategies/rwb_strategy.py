@@ -27,11 +27,10 @@ df = df.iloc[60:]
 
 # Initialize variables
 pos = 0
-num = 0
 percent_change = []
 
 # Loop over stock data
-for i in df.index:
+for num, i in enumerate(df.index):
     # Compute maximum and minimum exponential moving averages
     cmin = min(df[f"Ema_{ema}"][i] for ema in emas_used[:6])
     cmax = max(df[f"Ema_{ema}"][i] for ema in emas_used[6:])
@@ -61,8 +60,6 @@ for i in df.index:
         pc = (sp / bp - 1) * 100
         percent_change.append(pc)
 
-    num += 1
-
 # Compute various trading statistics
 gains = sum(i for i in percent_change if i > 0)
 ng = sum(1 for i in percent_change if i > 0)
@@ -91,11 +88,7 @@ else:
     max_loss = "undefined"
     ratio = "inf"
 
-if ng > 0 or nl > 0:
-    battingAvg = ng / (ng + nl)
-else:
-    battingAvg = 0
-
+battingAvg = ng / (ng + nl) if ng > 0 or nl > 0 else 0
 # Calculate Buy and Hold Result
 df["PC"] = df["Adj Close"].pct_change()
 hold = round(((df['PC'] / 100 + 1).cumprod().iloc[-1] - 1) * 100, 2)
@@ -103,15 +96,15 @@ hold = round(((df['PC'] / 100 + 1).cumprod().iloc[-1] - 1) * 100, 2)
 # Print strategy results and statistics
 print()
 print(f"Results for {stock.upper()} going back to {str(start_date)}: ")
-print("Number of Trades: " + str(ng + nl))
-print("Batting Avg: " + str(battingAvg))
-print("Gain/loss ratio: " + ratio)
-print("Average Gain: " + str(avg_gain))
-print("Average Loss: " + str(avgLoss))
-print("Max Return: " + max_return)
-print("Max Loss: " + max_loss)
-print("Total return over " + str(ng + nl) + " trades: " + str(total_return) + "%")
-print("Total return for a B&H strategy: " + str(hold) + "%")
+print(f"Number of Trades: {str(ng + nl)}")
+print(f"Batting Avg: {str(battingAvg)}")
+print(f"Gain/loss ratio: {ratio}")
+print(f"Average Gain: {str(avg_gain)}")
+print(f"Average Loss: {str(avgLoss)}")
+print(f"Max Return: {max_return}")
+print(f"Max Loss: {max_loss}")
+print(f"Total return over {str(ng + nl)} trades: {str(total_return)}%")
+print(f"Total return for a B&H strategy: {str(hold)}%")
 print()
 
 # Plot RWB Strategy

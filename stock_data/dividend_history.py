@@ -9,27 +9,25 @@ from lxml import html
 symbol = input("Enter a ticker: ").upper()
 
 # Define the start and end dates
-start = datetime.today() - timedelta(days=9125)
-end = datetime.today()
+start = datetime.now() - timedelta(days=9125)
+end = datetime.now()
 
 def format_date(date_datetime):
     """Converts a datetime object into a string representation of the date."""
     date_timetuple = date_datetime.timetuple()
     date_mktime = time.mktime(date_timetuple)
     date_int = int(date_mktime)
-    date_str = str(date_int)
-    return date_str
+    return str(date_int)
 
 def subdomain(symbol, start, end):
     """Constructs the URL for retrieving dividend history from Yahoo Finance."""
     format_url = "{0}/history?period1={1}&period2={2}"
     tail_url = "&interval=div%7Csplit&filter=div&frequency=1d"
-    subdomain = format_url.format(symbol, start, end) + tail_url
-    return subdomain
+    return format_url.format(symbol, start, end) + tail_url
 
 def header(subdomain):
     """Defines the HTTP headers to be used in the request to retrieve the dividend history."""
-    hdrs = {
+    return {
         "authority": "finance.yahoo.com",
         "method": "GET",
         "path": subdomain,
@@ -45,9 +43,8 @@ def header(subdomain):
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0"
+        "user-agent": "Mozilla/5.0",
     }
-    return hdrs
 
 def scrape_page(url, header):
     """Retrieves the dividend history table from the specified URL and returns a Pandas DataFrame."""
@@ -55,8 +52,7 @@ def scrape_page(url, header):
     element_html = html.fromstring(page.content)
     table = element_html.xpath('//table')
     table_tree = html.tostring(table[0], method='xml')
-    df = pd.read_html(table_tree)
-    return df
+    return pd.read_html(table_tree)
 
 def clean_dividends(symbol, dividends):
     """Cleans the retrieved dividend data and outputs a Pandas Series object."""

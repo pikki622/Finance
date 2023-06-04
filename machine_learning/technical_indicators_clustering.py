@@ -389,7 +389,7 @@ pred_for_tomorrow = pd.DataFrame({"Date": [], "company": [], "prediction": []})
 # Predict each stock using the 2nd January Data
 for cluster_selected in clusters_df.Cluster.unique():
     rf_cv = pickle.load(
-        open(os.getcwd() + f"\\Pickle_Files\\Cluster_{cluster_selected}", "rb")
+        open(f"{os.getcwd()}\\Pickle_Files\\Cluster_{cluster_selected}", "rb")
     )
     best_rf = rf_cv.best_estimator_
     cluster_data = day_data.loc[

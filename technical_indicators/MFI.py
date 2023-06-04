@@ -70,7 +70,7 @@ colors = dfc.VolumePositive.map({True: "g", False: "r"})
 ax1v.bar(dfc.Date, dfc["Volume"], color=colors, alpha=0.4)
 ax1v.axes.yaxis.set_ticklabels([])
 ax1v.set_ylim(0, 3 * df.Volume.max())
-ax1.set_title("Stock " + symbol + " Closing Price")
+ax1.set_title(f"Stock {symbol} Closing Price")
 ax1.set_ylabel("Price")
 
 ax2 = plt.subplot(2, 1, 2)

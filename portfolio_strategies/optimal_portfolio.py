@@ -30,17 +30,13 @@ def portfolio_var(returns, weights):
     # Calculate the covariance matrix and the volatility vector
     cov_matrix = np.cov(returns.T)
     volatilities = np.sqrt(np.diag(cov_matrix))
-    # Calculate the portfolio variance
-    portfolio_var = np.dot(weights.T, np.dot(cov_matrix, weights))
-    return portfolio_var
+    return np.dot(weights.T, np.dot(cov_matrix, weights))
 
 def sharpe_ratio(returns, weights, rf_rate):
     # Calculate the portfolio return and the portfolio volatility
     portfolio_return = np.dot(returns, weights)
     portfolio_volatility = np.sqrt(portfolio_var(returns, weights))
-    # Calculate the Sharpe ratio
-    sharpe_ratio = (portfolio_return - rf_rate) / portfolio_volatility
-    return sharpe_ratio
+    return (portfolio_return - rf_rate) / portfolio_volatility
 
 def negative_sharpe_n_minus_1_stock(weights, returns, rf_rate):
     # Define the weights for the remaining stocks

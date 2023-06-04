@@ -59,7 +59,7 @@ for lag in [1,2,3,4,5,6,7,8,9,10]:
     shifted = df.shift(shift)
     shifted.columns = [str.format("%s_shifted_by_%d" % (column ,shift)) for column in shifted.columns]
     newdata = pd.concat((newdata,shifted),axis=1)
-    
+
 # Forward lag
 forward_lag = 5
 newdata['target'] = newdata['Close'].shift(-forward_lag)
@@ -73,7 +73,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_
 
 # Train the model
 correlations = np.abs(X_train.corrwith(y_train))
-features =  list(correlations.sort_values(ascending=False)[0:50].index)
+features = list(correlations.sort_values(ascending=False)[:50].index)
 X_train = X_train[features]
 X_test = X_test[features]
 lr = LinearRegression()
@@ -141,8 +141,8 @@ scoring="neg_mean_absolute_error")
 X = newdata.drop("target",axis=1)
 Y = newdata['target']
 train_size = int(X.shape[0]*0.7)
-X_train = X[0:train_size]
-y_train = Y[0:train_size]
+X_train = X[:train_size]
+y_train = Y[:train_size]
 X_test = X[train_size:]
 y_test = Y[train_size:]
 

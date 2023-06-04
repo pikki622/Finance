@@ -33,4 +33,4 @@ R = np.mean(wins) / np.abs(np.mean(losses))
 Kelly = W - ((1 - W) / R)
 
 # Print the result
-print('Kelly Criterion: {}%'.format(np.round(Kelly, 3)))
+print(f'Kelly Criterion: {np.round(Kelly, 3)}%')

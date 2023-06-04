@@ -15,7 +15,7 @@ import datetime as dt
 # List of tickers to analyze
 tickers = ['GOOGL','FB','AAPL','NFLX','AMZN']
 # Number of days (steps or trading days in this case)
-Time=1440 
+Time=1440
 # Portfolio value
 pvalue = 1000 
 
@@ -38,8 +38,8 @@ mu = expected_returns.mean_historical_return(df_stocks)
 Sigma = risk_models.sample_cov(df_stocks)
 
 # Use the EfficientFrontier class to optimize the portfolio weights
-ef = EfficientFrontier(mu, Sigma, weight_bounds=(0,1)) 
-sharpe_pfolio = ef.max_sharpe() 
+ef = EfficientFrontier(mu, Sigma, weight_bounds=(0,1))
+sharpe_pfolio = ef.max_sharpe()
 sharpe_pwt = ef.clean_weights()
 print(sharpe_pwt)
 
@@ -56,8 +56,8 @@ for a in range(length):
 ticker_final = pd.concat(ticker_rx2,axis=1)
 
 # Plot the cumulative returns of all stocks
-for i, col in enumerate(ticker_final.columns):
-    ticker_final[col].plot()
+for col in ticker_final.columns:
+   ticker_final[col].plot()
 plt.title('Cumulative Returns')
 plt.xticks(rotation=80)
 plt.legend(ticker_final.columns)
@@ -80,9 +80,9 @@ price = price.dot(sh_wt)
 
 # Calculate the range of returns in a day
 daily_returns = []
-for i in range(10000): 
-    daily_return = (np.random.normal(ex_rtn/Time,varsigma/math.sqrt(Time),Time))
-    daily_returns.append(daily_return)
+for _ in range(10000):
+   daily_return = (np.random.normal(ex_rtn/Time,varsigma/math.sqrt(Time),Time))
+   daily_returns.append(daily_return)
 
 # Plot the range of returns in a day with 5th, 95th, and mean percentiles
 plt.plot(daily_returns)
@@ -102,4 +102,6 @@ plt.show()
 
 # Print findings
 print(np.percentile(daily_returns,5),np.percentile(daily_returns,95))
-print('$Amount required to cover minimum losses for one day is ' + str(pvalue* - np.percentile(daily_returns,5)))
+print(
+    f'$Amount required to cover minimum losses for one day is {str(pvalue * -np.percentile(daily_returns, 5))}'
+)

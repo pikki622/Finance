@@ -34,31 +34,31 @@ for i in df.index:
     SMA_short = df['SMA_20']
     SMA_long = df['SMA_50']
     close = df['Adj Close'][i]
-    
+
     if SMA_short[i] > SMA_long[i]:
         print('Up trend')
         if position == 0:
             buyP = close   # buy price
             position = 1   # turn position
-            print("Buy at the price: " + str(buyP))
-        
+            print(f"Buy at the price: {str(buyP)}")
+
     elif SMA_short[i] < SMA_long[i]:
         print('Down trend')
         if position == 1:   # have a position in down trend
             position = 0     # selling position
             sellP = close    # sell price
-            print("Sell at the price: " + str(sellP))
+            print(f"Sell at the price: {str(sellP)}")
             perc = (sellP / buyP - 1) * 100
             percentChange.append(perc)
     if counter == df["Adj Close"].count() - 1 and position == 1:
         position = 0
         sellP = close
-        print("Sell at the price: " + str(sellP))
+        print(f"Sell at the price: {str(sellP)}")
         perc = (sellP / buyP - 1) * 100
         percentChange.append(perc)
 
     counter += 1
-print('Current Price: ' + str(current_price))
+print(f'Current Price: {str(current_price)}')
 
 # Calculate strategy statistics
 gains = 0
@@ -75,9 +75,13 @@ for i in percentChange:
         numLosses += 1
     totReturn = totReturn * ((i / 100) + 1)
 totReturn = round((totReturn - 1) * 100, 2)
-print("This statistics is from " + str(df.index[0]) + " up to now with " + str(numGains + numLosses) + " trades:")
-print("SMAs used: " + str(SMAs))
-print("Total return over " + str(numGains + numLosses) + " trades: " + str(totReturn) + "%")
+print(
+    f"This statistics is from {str(df.index[0])} up to now with {str(numGains + numLosses)} trades:"
+)
+print(f"SMAs used: {str(SMAs)}")
+print(
+    f"Total return over {str(numGains + numLosses)} trades: {str(totReturn)}%"
+)
 
 # Calculate strategy advanced statistics
 if numGains > 0:
@@ -104,15 +108,22 @@ else:
 # Print statistics
 df['PC'] = df['Close'].pct_change()
 hold = round(df['PC'].sum() * 100, 2)
-print ("Total return for a B&H strategy: " + str(hold)+'%')
-print("Average Gain: "+ str(round(avgGain, 2)))
-print("Average Loss: "+ str(round(avgLoss, 2)))
-print("Max Return: "+ maxReturn)
-print("Max Loss: "+ maxLoss)
+print(f"Total return for a B&H strategy: {str(hold)}%")
+print(f"Average Gain: {str(round(avgGain, 2))}")
+print(f"Average Loss: {str(round(avgLoss, 2))}")
+print(f"Max Return: {maxReturn}")
+print(f"Max Loss: {maxLoss}")
 print("Gain/loss ratio: "+ ratioRR)
 print("Batting Avg: "+ str(batAvg))
 
 # Plot price history
-mpf.plot(df, type = 'ohlc',figratio=(14,7), mav=(short_sma,long_sma), 
-         volume=True, title= str(stock), style='default')
+mpf.plot(
+    df,
+    type='ohlc',
+    figratio=(14, 7),
+    mav=(short_sma, long_sma),
+    volume=True,
+    title=stock,
+    style='default',
+)
 plt.show()

@@ -13,10 +13,8 @@ sp_df = pd.read_excel(
 )
 
 # Clean the data
-clean_df = sp_df.drop([i for i in range(6)], axis=0)
-rename_dict = {}
-for i in sp_df.columns:
-    rename_dict[i] = sp_df.loc[6, i]
+clean_df = sp_df.drop(list(range(6)), axis=0)
+rename_dict = {i: sp_df.loc[6, i] for i in sp_df.columns}
 clean_df = clean_df.rename(rename_dict, axis=1)
 clean_df = clean_df.drop(6, axis=0)
 clean_df = clean_df.drop(clean_df.index[-1], axis=0)
@@ -41,8 +39,6 @@ plt.ylabel("Earnings Growth")
 plt.tight_layout()
 plt.show()
 
-# Base case valuation of S&P 500
-valuations = []
 terminal_growth = 0.04  # Terminal growth rate
 discount_rate = 0.08  # Discount rate
 payout_ratio = 0.50  # Payout ratio
@@ -68,7 +64,7 @@ eps_growth = [
 value_df = pd.DataFrame()
 value_df["earnings"] = (np.array(eps_growth) + 1).cumprod() * eps_next
 value_df["dividends"] = payout_ratio * value_df["earnings"]
-value_df["year"] = [i for i in range(2021, 2031)]
+value_df["year"] = list(range(2021, 2031))
 value_df.set_index("year", inplace=True)
 
 pv_dividends = 0
@@ -83,8 +79,7 @@ terminal_value = (
     / (discount_rate - terminal_growth)
 )
 
-valuations.append(pv_dividends + terminal_value / (1 + discount_rate) ** 10)
-
+valuations = [pv_dividends + terminal_value / (1 + discount_rate) ** 10]
 value_df["all_payouts"] = value_df["dividends"]
 value_df.loc[2030, "all_payouts"] += terminal_value
 value_df["Present Values"] = pv_list
@@ -126,13 +121,13 @@ eps_growth = [0, 0.15, 0.22, 0.20, 0.16, 0.13, 0.11, 0.09, 0.08, 0.08]
 bad_df = pd.DataFrame()
 bad_df["earnings"] = (np.array(eps_growth) + 1).cumprod() * eps_next
 bad_df["dividends"] = payout_ratio * bad_df["earnings"]
-bad_df["year"] = [i for i in range(2021, 2031)]
+bad_df["year"] = list(range(2021, 2031))
 bad_df.set_index("year", inplace=True)
 
-pv_dividends = 0
-for i in range(bad_df.shape[0]):
-    pv_dividends += bad_df["dividends"].iloc[i] / (1 + discount_rate) ** i
-
+pv_dividends = sum(
+    bad_df["dividends"].iloc[i] / (1 + discount_rate) ** i
+    for i in range(bad_df.shape[0])
+)
 terminal_value = (
     bad_df["dividends"].iloc[-1]
     * (1 + terminal_growth)
@@ -150,13 +145,13 @@ eps_growth = [0, -0.1, 0, 0.25, 0.25, 0.15, 0.12, 0.10, 0.08, 0.08]
 worst_df = pd.DataFrame()
 worst_df["earnings"] = (np.array(eps_growth) + 1).cumprod() * eps_next
 worst_df["dividends"] = payout_ratio * worst_df["earnings"]
-worst_df["year"] = [i for i in range(2021, 2031)]
+worst_df["year"] = list(range(2021, 2031))
 worst_df.set_index("year", inplace=True)
 
-pv_dividends = 0
-for i in range(worst_df.shape[0]):
-    pv_dividends += worst_df["dividends"].iloc[i] / (1 + discount_rate) ** i
-
+pv_dividends = sum(
+    worst_df["dividends"].iloc[i] / (1 + discount_rate) ** i
+    for i in range(worst_df.shape[0])
+)
 terminal_value = (
     worst_df["dividends"].iloc[-1]
     * (1 + terminal_growth)
@@ -221,7 +216,7 @@ def get_value(tg, dr, eps_growth, eps_next):
     value_df = pd.DataFrame()
     value_df["earnings"] = (np.array(eps_growth) + 1).cumprod() * eps_next
     value_df["dividends"] = payout_ratio * value_df["earnings"]
-    value_df["year"] = [i for i in range(2021, 2031)]
+    value_df["year"] = list(range(2021, 2031))
     value_df.set_index("year", inplace=True)
 
     pv_dividends = 0
@@ -239,17 +234,13 @@ def get_value(tg, dr, eps_growth, eps_next):
     return pv_dividends + terminal_value / (1 + discount_rate) ** 10
 
 # Valuation range
-eps_growths = []
-eps_nexts = []
-
 # Double dip EPS growth
 eps_growth_2020 = (11.88 + 17.76 + 25 + 25) / (34.95 + 35.08 + 33.99 + 35.72) - 1
 worst_eps_2020 = clean_df.iloc[-1]["Earnings"] * (1 + eps_growth_2020)
 eps_next = 24 * 4
 eps_growth = [0, -0.1, 0, 0.25, 0.25, 0.15, 0.12, 0.10, 0.08, 0.08]
-eps_growths.append(eps_growth)
-eps_nexts.append(eps_next)
-
+eps_growths = [eps_growth]
+eps_nexts = [eps_next]
 # Slow recovery EPS growth
 eps_growth_2020 = (11.88 + 17.76 + 25 + 25) / (34.95 + 35.08 + 33.99 + 35.72) - 1
 bad_eps_2020 = clean_df.iloc[-1]["Earnings"] * (1 + eps_growth_2020)
@@ -281,9 +272,10 @@ dr_range = np.arange(0.065, 0.09, 0.005)
 
 all_valuations = []
 for index, eps_growth in enumerate(eps_growths):
-    dr_valuations = []
-    for dr in dr_range:
-        dr_valuations.append(round(get_value(0.04, dr, eps_growth, eps_nexts[index])))
+    dr_valuations = [
+        round(get_value(0.04, dr, eps_growth, eps_nexts[index]))
+        for dr in dr_range
+    ]
     all_valuations.append(dr_valuations)
 
 ax = pd.DataFrame(

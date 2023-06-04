@@ -24,7 +24,7 @@ stock="QQQ"
 TargetPrice = 180
 
 # Set the subject, from, and to fields of the email message
-msg['Subject'] = 'Alert on '+ stock+'!'
+msg['Subject'] = f'Alert on {stock}!'
 msg['From'] = ''
 msg['To'] = ''
 
@@ -39,11 +39,13 @@ while 1:
 
     # Check if the current close price is greater than the target price and if alerted flag is False
     condition=currentClose>TargetPrice
-    if(condition and alerted==False):
+    if (condition and alerted==False):
         # Set the alerted flag to True and create the message
         alerted=True
-        message=stock +" Has activated the alert price of "+ str(TargetPrice) +\
-            "\nCurrent Price: "+ str(currentClose)
+        message = (
+            f"{stock} Has activated the alert price of {TargetPrice}"
+            + "\nCurrent Price: "
+        ) + str(currentClose)
         print(message)
         # Set the content of the email message
         msg.set_content(message)

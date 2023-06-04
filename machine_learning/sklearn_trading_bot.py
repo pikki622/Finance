@@ -39,7 +39,7 @@ class IsolationStrategy(bt.Strategy):
     def log(self, txt, dt=None):
         """This method logs the given message with the current date."""
         dt = dt or self.datas[0].datetime.date(0)
-        print("%s, %s" % (dt.isoformat(), txt))
+        print(f"{dt.isoformat()}, {txt}")
 
     def next(self):
         """This method is called on each new data point and performs the trading logic."""
@@ -101,7 +101,7 @@ class IsolationStrategy(bt.Strategy):
             self.dataclose[0] > np.mean(self.model_data["Close"])
         ):
             self.log("SELL CREATE, %.2f" % self.dataclose[0])
-            if not self.orderPosition == 0:
+            if self.orderPosition != 0:
                 self.sell(size=1)
                 self.orderPosition -= 1
 
@@ -123,8 +123,7 @@ def backtesting_engine(symbol, strategy, fromdate, todate, args=None):
     # Add a Strategy if no Data Required for the model
     if args is None:
         cerebro.addstrategy(strategy)
-    # If the Strategy requires a Model and therefore data
-    elif args is not None:
+    else:
         cerebro.addstrategy(strategy, args)
 
     # Retrieve Data from Alpaca

@@ -71,10 +71,13 @@ time_period = 1 / 365 # Daily
 total_time = 1 # 1 day
 
 # Run the Geometric Brownian Motion simulation n times
-simulations = [GBM(initial_price, drift, volatility, time_period, total_time) for i in range(n)]
+simulations = [
+    GBM(initial_price, drift, volatility, time_period, total_time)
+    for _ in range(n)
+]
 
 # Plot the results
-rcParams['figure.figsize'] = 15, 10 
+rcParams['figure.figsize'] = 15, 10
 for sim in simulations:
     plt.plot(np.arange(0, len(sim.prices)), sim.prices)
 
