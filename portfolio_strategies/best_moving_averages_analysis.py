@@ -89,15 +89,9 @@ result.sort(key = lambda x : -x['Training Forward Return'])
 
 # Print each return %
 for key, value in result[0].items():
-    if key == "Training Forward Return":
-        value = str(round(value, 4) * 100) + '%'
-        print (key + ':', value)
-    elif key == "Test Forward Return":
-        value = str(round(value, 4) * 100) + '%'
-        print (key + ':', value)
-    else:
-        print (key + ':', value)
-        
+    if key in ["Training Forward Return", "Test Forward Return"]:
+        value = f'{str(round(value, 4) * 100)}%'
+    print (key + ':', value)
 # Display best SMA
 best_sma = result[0][f'Best SMA for {days_forward} days forward']
 data['SMA'] = data['Close'].rolling(best_sma).mean()
@@ -106,7 +100,7 @@ data['SMA'] = data['Close'].rolling(best_sma).mean()
 plt.subplots()
 plt.gcf()
 plt.plot(data['Close'],label=symbol)
-plt.plot(data['SMA'],label = "{} periods SMA".format(best_sma))
+plt.plot(data['SMA'], label=f"{best_sma} periods SMA")
 plt.title('')
 plt.xlabel('Date')
 plt.ylabel('Price')

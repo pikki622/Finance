@@ -17,8 +17,7 @@ df = yf.download(symbol, start, end)
 def WSMA(df, column="Adj Close", n=14):
     ema = df[column].ewm(span=n, min_periods=n - 1).mean()
     K = 1 / n
-    wsma = df[column] * K + ema * (1 - K)
-    return wsma
+    return df[column] * K + ema * (1 - K)
 
 df["WSMA"] = WSMA(df, column="Adj Close", n=14)
 df = df.dropna()

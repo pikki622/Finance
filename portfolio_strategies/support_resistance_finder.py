@@ -31,23 +31,21 @@ df = df.loc[:, ["Date", "Open", "High", "Low", "Close"]]
 
 # Calculate support and resistance levels
 def isSupport(df, i):
-    support = (
+    return (
         df["Low"][i] < df["Low"][i - 1]
         and df["Low"][i] < df["Low"][i + 1]
         and df["Low"][i + 1] < df["Low"][i + 2]
         and df["Low"][i - 1] < df["Low"][i - 2]
     )
-    return support
 
 
 def isResistance(df, i):
-    resistance = (
+    return (
         df["High"][i] > df["High"][i - 1]
         and df["High"][i] > df["High"][i + 1]
         and df["High"][i + 1] > df["High"][i + 2]
         and df["High"][i - 1] > df["High"][i - 2]
     )
-    return resistance
 
 
 levels = []

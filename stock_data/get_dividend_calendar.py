@@ -27,14 +27,12 @@ class DividendCalendar:
     def date_str(self, day):
         # return a string representation of the date in the format YYYY-MM-DD
         date_obj = datetime.date(self.year, self.month, day)
-        date_str = date_obj.strftime(format='%Y-%m-%d')
-        return date_str
+        return date_obj.strftime(format='%Y-%m-%d')
 
     def scraper(self, date_str):
         # send GET request to the dividend calendar API and return a JSON dictionary
         params = {'date': date_str}
-        dictionary = requests.get(self.url, headers=self.hdrs, params=params).json()
-        return dictionary
+        return requests.get(self.url, headers=self.hdrs, params=params).json()
 
     def dict_to_df(self, dicti):
         # convert a JSON dictionary into a pandas DataFrame and append it to calendars list

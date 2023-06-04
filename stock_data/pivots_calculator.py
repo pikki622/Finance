@@ -50,7 +50,7 @@ plt.axhline(last_day['S2'].tolist()[0], color='green', label='Support 2')
 plt.axhline(last_day['R3'].tolist()[0], color='r', label='Resistance 3')
 plt.axhline(last_day['S3'].tolist()[0], color='r', label='Support 3')
 plt.legend()
-plt.title('{} - {}'.format(stock.upper(), start))
+plt.title(f'{stock.upper()} - {start}')
 plt.xlabel('Time')
 plt.ylabel('Price')
 

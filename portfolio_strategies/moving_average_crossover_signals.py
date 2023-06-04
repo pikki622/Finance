@@ -43,21 +43,17 @@ def buy_sell(data):
         if data['SMA 50'][i]>data['SMA 200'][i]:
             if flag != 1:
                 sigPriceBuy.append(data['stock'][i])
-                sigPriceSell.append(np.nan)
                 flag=1
             else:
                 sigPriceBuy.append(np.nan)
-                sigPriceSell.append(np.nan)
-        # Sell signal when SMA 50 is less than SMA 200 and previous signal was not sell
+            sigPriceSell.append(np.nan)
         elif data['SMA 50'][i]<data['SMA 200'][i]:
-            if flag != 0 :
-                sigPriceBuy.append(np.nan)
+            if flag != 0:
                 sigPriceSell.append(data['stock'][i])
                 flag = 0
             else:
-                sigPriceBuy.append(np.nan)
                 sigPriceSell.append(np.nan)
-        # No signal when SMA 50 is equal to SMA 200
+            sigPriceBuy.append(np.nan)
         else:
             sigPriceBuy.append(np.nan)
             sigPriceSell.append(np.nan)

@@ -23,9 +23,8 @@ stocklist = [item.replace(".", "-") for item in stocklist]
 
 # Initialize empty lists and variables
 exportList = pd.DataFrame(columns=['Stock', "RSI", "200 Day MA"])
-mylist = []
 today = datetime.date.today()
-mylist.append(today)
+mylist = [today]
 today = mylist[0]
 
 # Loop through all stocks in the list
@@ -33,7 +32,7 @@ for stock in stocklist[:5]:
     # Sleep for 1.5 seconds to avoid hitting Yahoo Finance API rate limits
     time.sleep(1.5)
 
-    print ("\npulling {}".format(stock))
+    print(f"\npulling {stock}")
 
     # Get data from Yahoo Finance API
     start_date = datetime.datetime.now() - datetime.timedelta(days=365)
@@ -61,10 +60,8 @@ for stock in stocklist[:5]:
     except Exception as e:
         # If there is an error getting data for the stock, skip it
         print (e)
-        pass
-
 # Save the export and other lists to separate Excel files
 print(exportList)
-writer = ExcelWriter('Export-Output_{}.xlsx'.format(today))
+writer = ExcelWriter(f'Export-Output_{today}.xlsx')
 exportList.to_excel(writer, "Sheet1")
 writer.save()

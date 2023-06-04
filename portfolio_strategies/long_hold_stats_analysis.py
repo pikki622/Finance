@@ -27,24 +27,24 @@ shares = int(100000/df.iloc[0])
 
 # Print the number of shares that can be bought, along with the beginning and current value of the investment
 print('\nNumber of Shares:')
-print('{}: {}'.format(symbol, shares))
+print(f'{symbol}: {shares}')
 
 print('\nBeginning Value:')
 begin_value = round(shares * df.iloc[0], 2)
-print('{}: ${}'.format(symbol, begin_value))
+print(f'{symbol}: ${begin_value}')
 
 print('\nCurrent Value:')
 current_value = round(shares * df.iloc[-1], 2)
-print('{}: ${}'.format(symbol, current_value))
+print(f'{symbol}: ${current_value}')
 
 # Calculate the daily returns of the stock
 returns = df.pct_change().dropna()
 
 # Calculate the mean, standard deviation, skewness, and kurtosis of the returns
 print("\nmean: " + str(round(returns.mean()*100, 2)))
-print("Std. dev: " + str(round(returns.std()*100, 2)))
-print("skew: " + str(round(returns.skew(), 2)))
-print("kurt: " + str(round(returns.kurtosis(), 2)))
+print(f"Std. dev: {str(round(returns.std() * 100, 2))}")
+print(f"skew: {str(round(returns.skew(), 2))}")
+print(f"kurt: {str(round(returns.kurtosis(), 2))}")
 
 # Calculate the total return of the investment and annualize it over the investment duration
 daily_cum_ret=(1+returns).cumprod()
@@ -63,11 +63,11 @@ sortino_ratio = (expected_return - rf)/down_stdev
 
 # Print the annualized return, volatility, and sortino ratio of the investment
 print('-' * 50)
-print("Expected return: " + str(round(expected_return*100, 2)))
+print(f"Expected return: {str(round(expected_return * 100, 2))}")
 print('-' * 50)
-print("Volatility: " + str(round(vol_port*100, 2)))
+print(f"Volatility: {str(round(vol_port * 100, 2))}")
 print('-' * 50)
-print("Sortino ratio: " + str(round(sortino_ratio, 2)))
+print(f"Sortino ratio: {str(round(sortino_ratio, 2))}")
 print('-' * 50)
 
 # Calculate the maximum value of the investment over rolling 252-day periods and the daily drawdown relative to the max
@@ -93,8 +93,8 @@ plt.show()
 rf = 0.001
 Sharpe_Ratio = ((returns.mean() - rf) / returns.std()) * np.sqrt(252)
 print("\nStock returns: " + str(round(returns.mean(), 2)))
-print("Stock risk: " + str(round(returns.std(), 2)))
-print('Sharpe Ratio: ' + str(round(Sharpe_Ratio, 2)))
+print(f"Stock risk: {str(round(returns.std(), 2))}")
+print(f'Sharpe Ratio: {str(round(Sharpe_Ratio, 2))}')
 
 # Value-at-Risk 99% Confidence
 var99 = round((returns).quantile(0.01), 3)
@@ -103,16 +103,16 @@ print('\nValue at Risk (99% confidence): ' + str(var99))
 # The percent value of the 5th quantile
 var_1_perc = round(np.quantile(var99, 0.01), 3)
 print('Percent Value-at-Risk of the 5th quantile: {:.1f}%'.format(-var_1_perc*100))
-print('Value-at-Risk of 99% for 100,000 investment: ${}'.format(int(-var99 * 100000)))
+print(f'Value-at-Risk of 99% for 100,000 investment: ${int(-var99 * 100000)}')
 
 # ### Value-at-Risk 95% Confidence
 var95 = round((returns).quantile(0.05), 3)
-print('Value at Risk (95% confidence): ' + str(var95))
+print(f'Value at Risk (95% confidence): {str(var95)}')
 print('Percent Value-at-Risk of the 5th quantile: {:.1f}%'.format(-var95*100))
 
 # VaR for 100,000 investment
-var_100k = "${}".format(int(-var95 * 100000))
-print('Value-at-Risk of 99% for 100,000 investment: ${}'.format(int(-var95 * 100000)))
+var_100k = f"${int(-var95 * 100000)}"
+print(f'Value-at-Risk of 99% for 100,000 investment: ${int(-var95 * 100000)}')
 
 # Histogram of returns
 mean = np.mean(returns)

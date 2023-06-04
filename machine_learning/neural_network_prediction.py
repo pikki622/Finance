@@ -54,4 +54,6 @@ def build_model():
     return model
 
 # Print the predicted stock price based on the model's output
-print('Predicted Price: ' + str(scaler.inverse_transform(model.predict([[0]]))[0][0]))
+print(
+    f'Predicted Price: {str(scaler.inverse_transform(model.predict([[0]]))[0][0])}'
+)

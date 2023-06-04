@@ -25,8 +25,7 @@ def get_top_stocks():
         ups.columns = ['Ticker', 'Last', 'Change', 'Volume', '4', 'Signal']
         ups = ups.drop(columns=['4'])
         ups = ups.iloc[1:]
-        ups = ups.set_index('Ticker')
-        return ups
+        return ups.set_index('Ticker')
     except Exception as e:
         # Return the exception if there is an error
         return e
@@ -38,8 +37,7 @@ def get_bottom_stocks():
         downs.columns = ['Ticker', 'Last', 'Change', 'Volume', '4', 'Signal']
         downs = downs.drop(columns=['4'])
         downs = downs.iloc[1:]
-        downs = downs.set_index('Ticker')
-        return downs
+        return downs.set_index('Ticker')
     except Exception as e:
         # Return the exception if there is an error
         return e
@@ -72,8 +70,7 @@ def get_headlines():
         headlines.columns = ['0', 'Time', 'Headlines']
         headlines = headlines.drop(columns=['0'])
         headlines = headlines[1:]
-        headlines = headlines.set_index('Time')
-        return headlines
+        return headlines.set_index('Time')
     except Exception as e:
         # Return the exception if there is an error
         return e
@@ -84,8 +81,7 @@ def get_major_news():
         major = pd.read_html(str(html), attrs={'class': 't-home-table'})[6]
         major.columns = ['Ticker', 'Change']
         major = major[1:]
-        major = major.set_index('Ticker')
-        return major
+        return major.set_index('Ticker')
     except Exception as e:
         return e
 
@@ -95,8 +91,7 @@ def get_earnings():
         earnings = pd.read_html(str(html), attrs = {'class': 't-home-table'})[7]
         earnings.columns = ['Date', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker', 'Ticker']
         earnings = earnings.iloc[1:]
-        earnings = earnings.set_index('Ticker')
-        return earnings
+        return earnings.set_index('Ticker')
     except Exception as e:
         return e
 

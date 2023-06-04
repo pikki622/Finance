@@ -37,13 +37,13 @@ tickers = [item.replace(".", "-") for item in tickers]
 
 recommendations = []
 
+lhs_url = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary/'
+rhs_url = '?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&' \
+          'modules=upgradeDowngradeHistory,recommendationTrend,' \
+          'financialData,earningsHistory,earningsTrend,industryTrend&' \
+          'corsDomain=finance.yahoo.com'
+
 for ticker in tickers:
-    lhs_url = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary/'
-    rhs_url = '?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&' \
-              'modules=upgradeDowngradeHistory,recommendationTrend,' \
-              'financialData,earningsHistory,earningsTrend,industryTrend&' \
-              'corsDomain=finance.yahoo.com'
-              
     url = lhs_url + ticker + rhs_url
     r = requests.get(url)
     if not r.ok:
@@ -53,13 +53,13 @@ for ticker in tickers:
         recommendation = result['financialData']['recommendationMean']['fmt']
     except:
         recommendation = 6 # Default recommendation if parsing fails
-    
+
     recommendations.append(recommendation)
     time.sleep(1.5) # Sleep for 1.5 seconds before sending another request
-    
+
     # Print the recommendation for each ticker
-    print("{} has an average recommendation of: {}".format(ticker, recommendation))
-    
+    print(f"{ticker} has an average recommendation of: {recommendation}")
+
 # Load the existing recommendation file and update it with today's recommendations
 df = pd.read_csv('recommendation-values.csv', index_col='Company')
 df[today] = recommendations

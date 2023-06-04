@@ -55,7 +55,7 @@ plt.figure(figsize=(15, 10))
 monthly_dataset['Returns'].plot(kind='bar', color=colors)
 plt.xlabel('Months')
 plt.ylabel('Returns')
-plt.title('Returns for Each Month ' + str(start_date) + ' to ' + str(end_date))
+plt.title(f'Returns for Each Month {str(start_date)} to {str(end_date)}')
 plt.xticks(monthly_dataset.index, monthly_dataset['Month_Name'])
 plt.show()
 

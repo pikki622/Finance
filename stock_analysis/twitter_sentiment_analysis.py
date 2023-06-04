@@ -29,7 +29,7 @@ stock = input("Enter a stock: ")
 
 # Define a function to get the name of a stock from its symbol using Yahoo Finance API
 def get_symbol(symbol):
-    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(symbol)
+    url = f"http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={symbol}&region=1&lang=en"
     result = requests.get(url).json()
     for x in result['ResultSet']['Result']:
         if x['symbol'] == symbol:
@@ -41,7 +41,7 @@ company_name = get_symbol(stock.upper())
 # Define a function to generate word cloud from a list of words
 def word_cloud(wd_list):
     stopwords = set(STOPWORDS)
-    all_words = ' '.join([text for text in wd_list])
+    all_words = ' '.join(list(wd_list))
     wordcloud = WordCloud(
         background_color='white',
         stopwords=stopwords,
@@ -58,16 +58,12 @@ def word_cloud(wd_list):
 
 # Define a function to calculate sentiment score using VADER sentiment analyzer
 def sentiment_analyzer_scores(text, engl=True):
-    if engl:
-        trans = text
-    else:
-        trans = translator.translate(text).text
-
+    trans = text if engl else translator.translate(text).text
     score = analyser.polarity_scores(trans)
     lb = score['compound']
     if lb >= 0.05:
         return 1
-    elif (lb > -0.05) and (lb < 0.05):
+    elif lb > -0.05:
         return 0
     else:
         return -1
@@ -143,6 +139,8 @@ def anl_tweets(lst, title='Tweets Sentiment', engl=True ):
 
 def twitter_stream_listener(file_name, filter_track, follow=None, locations=None, languages=None, time_limit=20):
     """Stream tweets containing a specified keyword"""
+
+
     class CustomStreamListener(tweepy.StreamListener):
         def __init__(self, time_limit):
             self.start_time = time.time()
@@ -169,18 +167,18 @@ def twitter_stream_listener(file_name, filter_track, follow=None, locations=None
                 # returning False in on_data disconnects the stream
                 return False
             else:
-                print('Encountered error with status code: {}'.format(
-                    status_code))
+                print(f'Encountered error with status code: {status_code}')
                 return True  # Don't kill the stream
 
         def on_timeout(self):
             print('Timeout...')
             return True  # Don't kill the stream
 
+
     # Writing csv titles
     print(
-        '\n[INFO] Open file: [{}] and starting {} seconds of streaming for {}\n'
-        .format(file_name, time_limit, filter_track))
+        f'\n[INFO] Open file: [{file_name}] and starting {time_limit} seconds of streaming for {filter_track}\n'
+    )
     with open(file_name, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(['author', 'date', 'text'])

@@ -6,18 +6,13 @@ from config import financial_model_prep
 # Get the API key
 demo = financial_model_prep()
 
-# Define the search criteria
-companies = []
 marketcap = str(1000000000)
 url = f'https://financialmodelingprep.com/api/v3/stock-screener?marketCapMoreThan={marketcap}&betaMoreThan=1&volumeMoreThan=10000&sector=Technology&exchange=NASDAQ&dividendMoreThan=0&limit=1000&apikey={demo}'
 
 # Fetch the list of companies that meet the search criteria
 screener = requests.get(url).json()
 
-# Store the symbols of the companies that meet the search criteria
-for item in screener:
-    companies.append(item['symbol'])
-
+companies = [item['symbol'] for item in screener]
 # Store the financial ratios of the companies that meet the search criteria
 value_ratios = {}
 
@@ -35,19 +30,19 @@ for company in companies:
             fin_ratios = requests.get(f'https://financialmodelingprep.com/api/v3/ratios/{company}?apikey={demo}').json()
 
             # Store the financial ratios of the current company
-            value_ratios[company] = {}
-            value_ratios[company]['ROE'] = fin_ratios[0]['returnOnEquity']
-            value_ratios[company]['ROA'] = fin_ratios[0]['returnOnAssets']
-            value_ratios[company]['Debt_Ratio'] = fin_ratios[0]['debtRatio']
-            value_ratios[company]['Interest_Coverage'] = fin_ratios[0]['interestCoverage']
-            value_ratios[company]['Payout_Ratio'] = fin_ratios[0]['payoutRatio']
-            value_ratios[company]['Dividend_Payout_Ratio'] = fin_ratios[0]['dividendPayoutRatio']
-            value_ratios[company]['PB'] = fin_ratios[0]['priceToBookRatio']
-            value_ratios[company]['PS'] = fin_ratios[0]['priceToSalesRatio']
-            value_ratios[company]['PE'] = fin_ratios[0]['priceEarningsRatio']
-            value_ratios[company]['Dividend_Yield'] = fin_ratios[0]['dividendYield']
-            value_ratios[company]['Gross_Profit_Margin'] = fin_ratios[0]['grossProfitMargin']
-
+            value_ratios[company] = {
+                'ROE': fin_ratios[0]['returnOnEquity'],
+                'ROA': fin_ratios[0]['returnOnAssets'],
+                'Debt_Ratio': fin_ratios[0]['debtRatio'],
+                'Interest_Coverage': fin_ratios[0]['interestCoverage'],
+                'Payout_Ratio': fin_ratios[0]['payoutRatio'],
+                'Dividend_Payout_Ratio': fin_ratios[0]['dividendPayoutRatio'],
+                'PB': fin_ratios[0]['priceToBookRatio'],
+                'PS': fin_ratios[0]['priceToSalesRatio'],
+                'PE': fin_ratios[0]['priceEarningsRatio'],
+                'Dividend_Yield': fin_ratios[0]['dividendYield'],
+                'Gross_Profit_Margin': fin_ratios[0]['grossProfitMargin'],
+            }
             # Fetch the growth ratios for the current company
             growth_ratios = requests.get(f'https://financialmodelingprep.com/api/v3/financial-growth/{company}?apikey={demo}').json()
 
@@ -80,11 +75,7 @@ PS = -1.05
 Revenue_Growth = 1.25
 Net_Income_Growth = 1.10
 
-# Mean to enable comparison across ratios
-ratios_mean = []
-for item in DF.columns:
-    ratios_mean.append(DF[item].mean())
-
+ratios_mean = [DF[item].mean() for item in DF.columns]
 # Divide each value in dataframe by mean to normalize values
 DF = DF / ratios_mean
 DF['ranking'] = DF['NetIncome_Growth']*Net_Income_Growth + DF['Revenue_Growth']*Revenue_Growth  + DF['ROE']*ROE + DF['ROA']*ROA + DF['Debt_Ratio'] * Debt_Ratio + DF['Interest_Coverage'] * Interest_Coverage + DF['Dividend_Payout_Ratio'] * Dividend_Payout_Ratio + DF['PB']*PB + DF['PS']*PS

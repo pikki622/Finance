@@ -62,7 +62,7 @@ while stock_symbol.lower() != "quit":
                       linestyle="-", linewidth=2, marker=",")
 
     # Set the plot's title and display it
-    plt.title(stock_symbol.upper() + ' Resistance Points')
+    plt.title(f'{stock_symbol.upper()} Resistance Points')
     plt.gcf().autofmt_xdate()
     plt.subplots_adjust(bottom=0.2)
     plt.show()

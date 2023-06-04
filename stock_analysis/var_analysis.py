@@ -25,7 +25,7 @@ plt.gcf()
 fig = plt.figure()
 fig.set_size_inches(10,3)
 df["Adj Close"].pct_change().plot()
-plt.title("{} daily returns".format(stock), weight='bold')
+plt.title(f"{stock} daily returns", weight='bold')
 plt.show()
 
 # Plot histogram of daily returns
@@ -88,7 +88,7 @@ def random_walk(startprice):
 
 # Simulations
 plt.gcf()
-for run in range(30):
+for _ in range(30):
     plt.plot(random_walk(10.0))
 plt.xlabel("Time")
 plt.ylabel("Price")
@@ -106,5 +106,5 @@ plt.figtext(0.6, 0.7, "Mean final price: %.2f" % simulations.mean())
 plt.figtext(0.6, 0.6, "VaR(0.99): %.2f" % (10 - q,))
 plt.figtext(0.15, 0.6, "q(0.99): %.2f" % q)
 plt.axvline(x=q, linewidth=4, color='r')
-plt.title("Final price distribution after {} days".format(days), weight='bold');
+plt.title(f"Final price distribution after {days} days", weight='bold');
 plt.show()

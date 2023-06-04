@@ -61,7 +61,7 @@ def get_top_abs_correlations(df, n=25):
     au_corr = df.corr().abs().unstack()
     labels_to_drop = get_redundant_pairs(df)
     au_corr = au_corr.drop(labels=labels_to_drop).sort_values(ascending=False)
-    return au_corr[0:n]
+    return au_corr[:n]
 
 # Display top absolute correlations
 print("\nTop Absolute Correlations")

@@ -27,7 +27,7 @@ try:
         df_tr = df.findAll('tr')
 
         print ('\n')
-        print ('Recent News Headlines for {}: '.format(ticker))
+        print(f'Recent News Headlines for {ticker}: ')
 
         for i, table_row in enumerate(df_tr):
             a_text = table_row.a.text

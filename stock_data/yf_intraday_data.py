@@ -17,7 +17,7 @@ close_prices = data['Close']
 # Create a plot of the close prices
 fig, ax = plt.subplots()
 ax.plot(close_prices)
-ax.set_title('Price for {}'.format(symbol))
+ax.set_title(f'Price for {symbol}')
 ax.set_xlabel('Time')
 ax.set_ylabel('Price')
 plt.show()

@@ -37,9 +37,7 @@ symbol, start, end = user_input_features()
 
 def get_symbol(symbol):
     """Returns the company name given the stock symbol using the Yahoo Finance API"""
-    url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(
-        symbol
-    )
+    url = f"http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={symbol}&region=1&lang=en"
     result = requests.get(url).json()
     for x in result["ResultSet"]["Result"]:
         if x["symbol"] == symbol:

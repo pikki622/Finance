@@ -11,8 +11,8 @@ import datetime
 # Define function to filter relevant data from websocket messages
 def filter_raw_message(text):
     try:
-        found = re.search('"m":"(.+?)",', text).group(1)
-        found2 = re.search('"p":(.+?"}"])}', text).group(1)
+        found = re.search('"m":"(.+?)",', text)[1]
+        found2 = re.search('"p":(.+?"}"])}', text)[1]
         # Print the filtered data for debugging purposes
         print(found)
         print(found2)
@@ -24,19 +24,19 @@ def filter_raw_message(text):
 def generateSession():
     stringLength=12
     letters = string.ascii_lowercase
-    random_string= ''.join(random.choice(letters) for i in range(stringLength))
-    return "qs_" +random_string
+    random_string = ''.join(random.choice(letters) for _ in range(stringLength))
+    return f"qs_{random_string}"
 
 # Define function to generate a random chart session ID
 def generateChartSession():
     stringLength=12
     letters = string.ascii_lowercase
-    random_string= ''.join(random.choice(letters) for i in range(stringLength))
-    return "cs_" +random_string
+    random_string = ''.join(random.choice(letters) for _ in range(stringLength))
+    return f"cs_{random_string}"
 
 # Define function to prepend the header required by the websocket
 def prependHeader(st):
-    return "~m~" + str(len(st)) + "~m~" + st
+    return f"~m~{len(st)}~m~" + st
 
 # Define function to construct the JSON message to be sent over the websocket
 def constructMessage(func, paramList):
@@ -59,15 +59,15 @@ def sendMessage(ws, func, args):
 
 # Define function to extract data from websocket message and save to CSV file
 def generate_csv(a):
-    out= re.search('"s":\[(.+?)\}\]', a).group(1)
+    out = re.search('"s":\[(.+?)\}\]', a)[1]
     x=out.split(',{\"')
-    
+
     with open('data_file.csv', mode='w', newline='') as data_file:
         employee_writer = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    
+
         # Write CSV header row
         employee_writer.writerow(['index', 'date', 'open', 'high', 'low', 'close', 'volume'])
-        
+
         # Write CSV data rows
         for xi in x:
             xi= re.split('\[|:|,|\]', xi)
@@ -79,17 +79,17 @@ def generate_csv(a):
 headers = json.dumps({
     'Origin': 'https://data.tradingview.com'
 })
-    
+
 # Then create a connection to the websocket
 ws = create_connection(
     'wss://data.tradingview.com/socket.io/websocket',headers=headers)
 
 # Generate random session and chart session IDs
 session= generateSession()
-print("session generated {}".format(session))
+print(f"session generated {session}")
 
 chart_session= generateChartSession()
-print("chart_session generated {}".format(chart_session))
+print(f"chart_session generated {chart_session}")
 
 # Send various messages to establish the websocket connection and start streaming data
 sendMessage(ws, "set_auth_token", ["unauthorized_user_token"])

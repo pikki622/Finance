@@ -37,14 +37,14 @@ regression_model.fit(X_train, y_train)
 # Get the intercept for the model
 intercept = regression_model.intercept_
 
-print("The intercept for our model is: {}".format(intercept))
+print(f"The intercept for our model is: {intercept}")
 
 # Test the model
 score = regression_model.score(X_test, y_test)
-print("The score for our model is: {}".format(score))
+print(f"The score for our model is: {score}")
 
 # Predict the next day's price
 latest_data = data.tail(1).values.tolist()
 next_day_price = regression_model.predict(latest_data)[0]
 
-print("The predicted price for the next trading day is: {}".format(next_day_price))
+print(f"The predicted price for the next trading day is: {next_day_price}")

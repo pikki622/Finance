@@ -1,6 +1,6 @@
 # Import dependencies
 import math
-import datetime 
+import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -58,13 +58,9 @@ model.fit(x_train, y_train, batch_size=1, epochs=5)
 # Create test dataset
 test_data = scaled_data[train_data_len-60:, :]
 
-# Create x_test, y_test datasets
-x_test = []
 y_test = dataset[train_data_len:, :]
 
-for i in range(60,len(test_data)):
-    x_test.append(test_data[i-60:i, 0])
-
+x_test = [test_data[i-60:i, 0] for i in range(60,len(test_data))]
 # Convert data to numpy array
 x_test = np.array(x_test)
 
@@ -95,15 +91,14 @@ plt.show()
 # Get predicted price for next day
 last_60day = data[-60:].values
 last_60day_scaled = scaler.transform(last_60day)
-xx_test = []
-xx_test.append(last_60day_scaled)
+xx_test = [last_60day_scaled]
 xx_test = np.array(xx_test)
 xx_test = np.reshape(xx_test, (xx_test.shape[0], xx_test.shape[1],1))
 pred = model.predict(xx_test)
 pred = scaler.inverse_transform(pred)
 pred = pred[0]
 pred = pred[0]
-print("The predicted price for the next trading day is: {}".format(round(pred, 2)))
+print(f"The predicted price for the next trading day is: {round(pred, 2)}")
 
 # Root mean squared error
 print (f'The root mean squared error is {round(rmse, 2)}')

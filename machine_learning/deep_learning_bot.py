@@ -12,7 +12,7 @@ from keras import callbacks
 # Setup data for LSTM model
 def setup_data(symbol, data_len, seq_len):
     # Get start and end dates for data
-    end = datetime.datetime.today().strftime('%Y-%m-%d')
+    end = datetime.datetime.now().strftime('%Y-%m-%d')
     start = datetime.datetime.strptime(end, '%Y-%m-%d') - datetime.timedelta(days=(data_len / 0.463))
 
     # Download and normalize data using Yahoo Finance API
@@ -25,7 +25,7 @@ def setup_data(symbol, data_len, seq_len):
 
     # Convert dataset into sequences of length seq_len
     cols = dataset.columns.tolist()
-    data_seq = list()
+    data_seq = []
     for i in range(len(cols)):
         if cols[i] < 4:
             data_seq.append(dataset[cols[i]].values)
@@ -101,24 +101,30 @@ def train_model(X_train,y_train,model,epochs):
     h5='stocks'+'_best_model'+'.h5'
     checkpoint = callbacks.ModelCheckpoint(h5, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
     earlystop = callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=epochs * 1/4, verbose=0, mode='auto', baseline=None, restore_best_weights=True)
-    callback = [earlystop,checkpoint] 
+    callback = [earlystop,checkpoint]
     json = 'stocks'+'_best_model'+'.json'
     model_json = model.to_json()
     with open(json, "w") as json_file:
         json_file.write(model_json)
-    history = model.fit(X_train, y_train, epochs=epochs, batch_size=len(X_train)//4, verbose=2,validation_split = 0.3, callbacks = callback)
-    return history
+    return model.fit(
+        X_train,
+        y_train,
+        epochs=epochs,
+        batch_size=len(X_train) // 4,
+        verbose=2,
+        validation_split=0.3,
+        callbacks=callback,
+    )
 
 # Load keras model
 def load_keras_model(dataset,model,loss,optimizer):
     dirx = ''
     os.chdir(dirx)
-    json_file = open(dataset+'_best_model'+'.json', 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
+    with open(f'{dataset}_best_model.json', 'r') as json_file:
+        loaded_model_json = json_file.read()
     model = model_from_json(loaded_model_json)
     model.compile(optimizer=optimizer, loss=loss, metrics = None)
-    model.load_weights(dataset+'_best_model'+'.h5')
+    model.load_weights(f'{dataset}_best_model.h5')
     return model
 
 # Evaluate keras model
@@ -140,7 +146,7 @@ def evaluation(exe_time,X_test, y_test,X_train, y_train,history,model,optimizer,
 def market_predict(model,minmax,seq_len,n_features,n_steps,data,test_loss):
     pred_data = data[-1].reshape((len(data[-1]),1, n_steps, n_features))
     pred = model.predict(pred_data)[0]
-    appro_loss = list()
+    appro_loss = []
     for i in range(len(pred)):
         pred[i] = pred[i] * (minmax[i][1] - minmax[i][0]) + minmax[i][0]
         appro_loss.append(((100-test_loss)/100) * (minmax[i][1] - minmax[i][0]))
@@ -150,7 +156,7 @@ def market_predict(model,minmax,seq_len,n_features,n_steps,data,test_loss):
 BASE_URL = 'https://paper-api.alpaca.markets'
 API_KEY = "*****************"
 SECRET_KEY = "************************************"
-ORDERS_URL = '{}/v2/orders'.format(BASE_URL)
+ORDERS_URL = f'{BASE_URL}/v2/orders'
 HEADERS = {'APCA-API-KEY-ID':API_KEY,'APCA-API-SECRET-KEY':SECRET_KEY}
 
 # Send an order to the Alpaca account

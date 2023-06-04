@@ -15,7 +15,7 @@ df_filtered = df[df['% Change']>=5]
 
 # get today's date and use it to create a file name
 today = datetime.date.today()
-file_name = "Top Gainers " + str(today) +".csv"
+file_name = f"Top Gainers {str(today)}.csv"
 df_filtered.to_csv(file_name)
 
 def send_email():
@@ -29,7 +29,7 @@ def send_email():
    msg['To'] = email_recipient
    msg['Subject'] = "Stock Market Movers"
    msg.attach(MIMEText(email_message, 'plain'))
-   
+
    # attach file to email
    if attachment_location != '':
       filename = os.path.basename(attachment_location)
@@ -37,9 +37,9 @@ def send_email():
       part = MIMEBase('application', 'octet-stream')
       part.set_payload(attachment.read())
       encoders.encode_base64(part)
-      part.add_header('Content-Disposition', "attachment; filename=%s" % filename)
+      part.add_header('Content-Disposition', f"attachment; filename={filename}")
       msg.attach(part)
-   
+
    # send email using SMTP protocol
    try:
       server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -52,7 +52,7 @@ def send_email():
       server.quit()
    except Exception as e:
       print(e)
-      
+
    return schedule.CancelJob
 
 # schedule the email to be sent every day at 4:00

@@ -35,41 +35,46 @@ for ticker in tickers:
             exchange = 'AMEX'
         else:
             print(f"Could not find the exchange for {ticker}")
-        
+
         # Get the current price of the ticker
         price = round(si.get_live_price(ticker), 2)
-        
+
         # Retrieve technical analysis data from TradingView
-        webdriver.get("https://www.tradingview.com/symbols/{}-{}/technicals".format(exchange, ticker))
+        webdriver.get(
+            f"https://www.tradingview.com/symbols/{exchange}-{ticker}/technicals"
+        )
         time.sleep(1)
-        
+
         # Print out the ticker, interval, and price
         print('Ticker: ' + ticker)
-        print('Interval: ' + interval)
-        print('Price: ' + str(price))
-        
+        print(f'Interval: {interval}')
+        print(f'Price: {str(price)}')
+
         # Click on the specified time interval
         numbers = [1, 2, 3, 4, 5, 6, 7, 8]
         for type_interval, n in zip(type_intervals, numbers):
-            if interval == type_interval:
-                element = webdriver.find_element_by_xpath(f'//*[@id="technicals-root"]/div/div/div[1]/div/div/div[1]/div/div/div[{n}]')
-                element.click()
-            else:
+            if interval != type_interval:
                 continue
-        
+
+            element = webdriver.find_element_by_xpath(f'//*[@id="technicals-root"]/div/div/div[1]/div/div/div[1]/div/div/div[{n}]')
+            element.click()
         time.sleep(1)
-        
+
         # Overall Recommendation
         recommendation_elements = webdriver.find_elements_by_class_name("speedometerSignal-pyzN--tL")
         analysis.append(recommendation_elements[1].get_attribute('innerHTML'))
         counter_elements = webdriver.find_elements_by_class_name("counterNumber-3l14ys0C")
-        analysis.append(int(counter_elements[3].get_attribute('innerHTML')))
-        analysis.append(int(counter_elements[4].get_attribute('innerHTML')))
-        analysis.append(int(counter_elements[5].get_attribute('innerHTML')))
+        analysis.extend(
+            (
+                int(counter_elements[3].get_attribute('innerHTML')),
+                int(counter_elements[4].get_attribute('innerHTML')),
+                int(counter_elements[5].get_attribute('innerHTML')),
+            )
+        )
         df = pd.DataFrame.from_records([tuple(analysis)], columns=['Recommendation', '# of Sell Signals', '# of Neutral Signals', '# of Buy Signals'])
         print('\nOverall Recommendation: ')
         print(df.set_index('Recommendation').T)
-        
+
         # Oscillator Recommendation
         analysis.append(recommendation_elements[0].get_attribute('innerHTML'))
         counter_elements = webdriver.find_elements_by_class_name("counterNumber-3l14ys0C")
@@ -79,7 +84,7 @@ for ticker in tickers:
         df = pd.DataFrame.from_records([tuple(analysis[4:8])], columns=['Recommendation', '# of Sell Signals', '# of Neutral Signals', '# of Buy Signals'])
         print ('\nOscillator Recommendation: ')
         print (df.set_index('Recommendation').T)
-    
+
         # Moving Average Recommendation
         analysis.append(recommendation_elements[2].get_attribute('innerHTML'))
         counter_elements = webdriver.find_elements_by_class_name("counterNumber-3l14ys0C")
@@ -89,16 +94,16 @@ for ticker in tickers:
         df = pd.DataFrame.from_records([tuple(analysis[8:12])], columns=['Recommendation', '# of Sell Signals', '# of Neutral Signals', '# of Buy Signals'])
         print ('\nMoving Average Recommendation: ')
         print (df.set_index('Recommendation').T)
-        
+
         # Use pandas.read_html to get tables
         html = webdriver.page_source
         tables = pd.read_html(html, attrs = {'class': 'table-1YbYSTk8'})
-        
+
         # Set variable names to tables
         oscillator_table = tables[0]
         ma_table = tables[1]
         pivots_table = tables[2]
-        
+
         # Rename dataframe columns
         oscillator_table.columns = ['Name', 'Value', 'Action']
         ma_table.columns = ['Name', 'Value', 'Action']
